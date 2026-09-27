@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d2338">
+  <meta name="description" content="Galeria spotkania szkolnego SP24 w Rybniku z 31 marca 2007 roku.">
+  <title>Spotkanie szkolne 2007 · SP24 Rybnik</title>
+  <link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+  <svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path d="M5 5 19 19M19 5 5 19"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+  </svg>
+
+  <main id="access-screen" class="access-screen">
+    <div class="access-shell">
+      <div class="access-top">
+        <span class="access-wordmark"><span>Event Gallery</span></span>
+        <span>ARCHIWUM FOTOGRAFII</span>
+      </div>
+
+      <section class="access-panel" aria-labelledby="event-title">
+        <p class="access-kicker">RYBNIK · POPIELÓW</p>
+        <h1 id="event-title">Spotkanie<br>szkolne<span>.</span></h1>
+        <p class="access-date">31 marca 2007</p>
+
+        <form id="access-form" class="access-form">
+          <label for="access-password">Hasło do galerii</label>
+          <div class="password-row">
+            <input id="access-password" name="password" type="password"
+                   autocomplete="current-password" placeholder="Wpisz hasło" required>
+            <button class="enter-button" type="submit">
+              Wejdź
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            </button>
+          </div>
+          <p id="access-error" class="access-error" role="alert" hidden>
+            Nieprawidłowe hasło. Spróbuj ponownie.
+          </p>
+        </form>
+      </section>
+
+      <p class="access-footnote">
+        
+      </p>
+    </div>
+
+    <div class="access-visual" aria-hidden="true">
+      <span class="visual-top"></span>
+      <span class="visual-bottom">31 MARCA 2007 <span>·</span> RYBNIK-POPIELÓW</span>
+    </div>
+  </main>
+
+  <main id="gallery-app" class="gallery-app" hidden>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="Początek galerii">
+          <span>Event <strong>Gallery</strong></span>
+        </a>
+        <span class="header-divider" aria-hidden="true"></span>
+        <span class="header-caption">
+          Spotkanie szkolne <small>31.03.2007</small>
+        </span>
+        <div class="header-actions">
+          <button id="browse-button" class="browse-button" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#icon-eye"/></svg>
+            Przeglądaj
+          </button>
+          <button id="logout-button" class="header-close" type="button"
+                  aria-label="Zamknij galerię" title="Zamknij galerię">
+            <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="gallery-content" id="top">
+      <section class="gallery-intro" aria-labelledby="gallery-title">
+        <div>
+          <p class="eyebrow"><span class="eyebrow-line"></span> SP24 · Rybnik · 2007</p>
+          <h2 id="gallery-title">Galeria wspomnień<span class="title-period">.</span></h2>
+          <p class="intro-description">
+            Zatrzymane chwile ze spotkania szkolnego. Wybierz fotografię,
+            aby zobaczyć ją w pełnym rozmiarze.
+          </p>
+        </div>
+        <div class="intro-counter">
+          <strong>106</strong>
+          <span>fotografii<br>w archiwum</span>
+        </div>
+      </section>
+
+      <section class="gallery-toolbar" aria-label="Narzędzia galerii">
+        <div class="series-control" role="group" aria-label="Wybierz serię zdjęć">
+          <button class="filter-button is-active" data-series="all" type="button"
+                  aria-pressed="true">Wszystkie</button>
+          <button class="filter-button" data-series="p331" type="button"
+                  aria-pressed="false">Seria I</button>
+          <button class="filter-button" data-series="p401" type="button"
+                  aria-pressed="false">Seria II</button>
+        </div>
+        <label class="search-field">
+          <svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg>
+          <span class="visually-hidden">Szukaj po numerze zdjęcia</span>
+          <input id="photo-search" type="search" placeholder="Szukaj numeru zdjęcia">
+        </label>
+      </section>
+
+      <p id="photo-count" class="photo-count" aria-live="polite"></p>
+      <section id="photo-grid" class="photo-grid"
+               aria-label="Zdjęcia ze spotkania"></section>
+    </div>
+
+    <footer class="site-footer">
+      SP24 Rybnik <span aria-hidden="true">·</span>
+      Archiwum spotkania szkolnego, 2007
+    </footer>
+  </main>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Podgląd zdjęcia">
+    <div class="lightbox-bar">
+      <p id="lightbox-label" class="lightbox-label"></p>
+      <div class="lightbox-actions">
+        <button id="slideshow-button" class="slideshow-button" type="button"
+                aria-pressed="false">Pokaz slajdów</button>
+        <button id="download-link" class="download-link" type="button">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/>
+          </svg>
+          Pobierz
+        </button>
+        <button id="close-lightbox" class="lightbox-close" type="button"
+                aria-label="Zamknij podgląd">
+          <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="lightbox-stage">
+      <button
+        id="previous-photo"
+        class="lightbox-nav previous"
+        type="button"
+        aria-label="Poprzednie zdjęcie"
+      >
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m15 6-6 6 6 6"/>
+        </svg>
+      </button>
+
+      <img id="lightbox-image" alt="">
+
+      <button
+        id="next-photo"
+        class="lightbox-nav next"
+        type="button"
+        aria-label="Następne zdjęcie"
+      >
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m9 6 6 6-6 6"/>
+        </svg>
+      </button>
+    </div>
+  </dialog>
+
+  <p id="download-status" class="download-status" role="status"
+     aria-live="polite" hidden></p>
+  <script src="app.js?v=5"></script>
+</body>
+</html>
