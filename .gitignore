@@ -1,1 +1,12 @@
-/photos/
+# Prywatne, oryginalne materialy. Kod pozostaje bezpieczny do publikacji na GitHubie.
+/media/
+/videos/
+/deploy/photos/
+.dev.vars
+.wrangler/
+node_modules/
+.artifacts/
+test-results/
+.env
+.env.*
+!.env.example

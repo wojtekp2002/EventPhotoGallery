@@ -1,0 +1,8 @@
+# Szablon dla Cloudflare. Nazwę bucketu zmień przed wdrożeniem.
+name = "private-event-archive"
+compatibility_date = "2026-10-21"
+pages_build_output_dir = "./deploy"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "event-gallery-media"

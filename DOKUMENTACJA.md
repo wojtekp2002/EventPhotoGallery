@@ -1,118 +1,96 @@
-# Dokumentacja galerii SP24 Rybnik
+# Dokumentacja archiwum SP24
 
-## Zawartość projektu
+## Lokalne uruchomienie
 
-| Plik lub folder | Przeznaczenie |
-| --- | --- |
-| `index.html` | struktura strony |
-| `styles.css` | wygląd na telefonach i komputerach |
-| `app.js` | hasło, galeria, filtry, podgląd i pobieranie |
-| `photos/` | 106 pełnych, oryginalnych zdjęć JPG |
-| `README.md` | krótki opis projektu |
+`npm run dev` uruchamia wspólne API i serwuje aplikację na `127.0.0.1`. Otwórz dokładny adres z terminala; inny serwer na IPv6 pod `localhost` może pokazywać starszą stronę.
 
-## Ustawienia przed publikacją
+Lokalne hasła: `SP24-2007` (widz) i `organizator-lokalnie` (organizator). To wartości serwera deweloperskiego, nie kodu przeglądarki. Własne ustawienia w `.dev.vars`:
+~~~dotenv
+GALLERY_PASSWORD=twoje-haslo-widzow
+GALLERY_ADMIN_TOKEN=twoje-haslo-organizatora
+GALLERY_SESSION_SECRET=dlugi-losowy-sekret-minimum-32-znaki
+~~~
+Nie commituj tego pliku. Restart lokalnego serwera bez ustawionego sekretu unieważnia dotychczasowe sesje.
 
-### Hasło
+## Albumy i przesyłanie
 
-W `app.js` znajdź pierwszy wiersz i podmień hasło:
+Nazwa całej strony to **Archiwum spotkań rocznika 1964 · SP24**. Daty należą do albumów.
 
-```js
-const ACCESS_PASSWORD = "SP24-2007";
-```
+**Dodaj zdjęcia** otwiera logowanie organizatora. Wybierz album albo **Nowe spotkanie**. Identyfikator folderu powstaje automatycznie z nazwy i unikalnego sufiksu, np. `spotkanie-2026-a1b2c3d4`. Data jest opcjonalna.
 
-Przykład:
+~~~text
+media/events/
+  index.json
+  spotkanie-2007/
+    manifest.json
+    photos/
+    videos/
+  spotkanie-2026-a1b2c3d4/
+    manifest.json
+    photos/
+~~~
 
-```js
-const ACCESS_PASSWORD = "Twoje-mocne-haslo-2026";
-```
+Nowo przesyłane pliki otrzymują nazwę będącą skrótem zawartości. Oryginalna nazwa zostaje zachowana w metadanych i podczas pobierania. Różne zdjęcia o tej samej nazwie nie nadpisują się. Ponowne przesłanie tych samych bajtów przez panel nie tworzy duplikatu.
 
-### Nazwa wydarzenia
+Przycisk **Zatrzymaj** kończy bieżący plik i zatrzymuje kolejkę. Ponowienie pomija zakończone pliki. Zamknięcie formularza usuwa tylko jego kolejkę, nie przesłane zdjęcia. JPG, PNG, WebP; limit 20 MB na zdjęcie, do 200 plików w kolejce.
 
-Teksty widoczne na stronie znajdują się w `index.html`. Najważniejsze są trzy fragmenty:
+## Import starszych materiałów
 
-```html
-<h1>Spotkanie szkolne</h1>
-<p class="event-meta">SP24 Rybnik <span>/</span> 31.03.2007</p>
-<strong>Spotkanie szkolne</strong>
-```
+Zachowano album 2007 z 106 zdjęciami i dwoma MP4. Utworzenie lokalnego katalogu:
+~~~sh
+npm run event:create -- spotkanie-2026 --title="Spotkanie 2026" --date=2026-06-20
+~~~
+Po dodaniu plików do `photos/` lub `videos/`:
+~~~sh
+npm run media:scan
+~~~
+Skan dopisuje nowe pliki do manifestów, zachowując wcześniejsze wpisy i oryginały. Panel internetowy przesyła zdjęcia; duże MP4 importuje się do magazynu wraz z manifestem. API obsługuje Range dla odtwarzania i przewijania.
 
-## Utworzenie repozytorium GitHub
+## Pobieranie
 
-1. Na GitHub wybierz `New repository`.
-2. Nadaj nazwę, np. `galeria-sp24-rybnik`.
-3. Wybierz widoczność `Public`, jeśli strona ma być dostępna dla każdego z linkiem.
-4. Nie dodawaj automatycznie pliku README, ponieważ projekt ma już własny.
-5. Skopiuj adres nowo utworzonego repozytorium.
+Linki mają atrybut `download`, a API wysyła `Content-Disposition: attachment` z nazwą UTF-8 i oryginalnymi bajtami. Ten sam kod działa lokalnie i w Cloudflare. [Opis nagłówka](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition).
 
-W terminalu otwartym w folderze `galeria-spotkanie-sp24` wykonaj:
+Przeglądarka decyduje, czy zapisać plik w Pobranych, czy zapytać o folder. Strona nie zmienia tego ustawienia.
 
-```powershell
-git init
-git add .
-git commit -m "Dodaj galerię spotkania SP24"
-git branch -M main
-git remote add origin https://github.com/TWOJ_LOGIN/galeria-sp24-rybnik.git
-git push -u origin main
-```
+## Wdrożenie
 
-Zastąp `TWOJ_LOGIN` swoim loginem GitHub. Przy pierwszym `git push` GitHub może poprosić o zalogowanie w przeglądarce.
+Wymaganie bez karty, porównanie magazynów i ograniczenia nagrań opisano w [HOSTING.md](HOSTING.md). Poniższa konfiguracja dotyczy istniejącego adaptera R2, nie proponowanego wariantu B2.
 
-### Gdy Git zgłasza brak miejsca na dysku
+Kod obsługuje Cloudflare Pages i prywatne R2. Nie aktywuje usług. R2 wymaga subskrypcji i checkout mimo bezpłatnego limitu. Przy wymaganiu „bez karty” nie zakładaj, że R2 je spełni. [Warunki R2](https://developers.cloudflare.com/r2/get-started/).
 
-Zdjęcia zajmują około 66 MB, a Git potrzebuje dodatkowego miejsca na swoją kopię plików przed pierwszym commitem. Jeśli `D:` ma mało wolnego miejsca, najprościej przenieść cały folder projektu na dysk `C:`, gdzie jest wolne miejsce, a potem ponowić polecenia Git w nowej lokalizacji.
+1. Utwórz prywatny bucket, jeżeli akceptujesz warunki usługi. Nie włączaj publicznego dostępu.
+2. W `wrangler.toml` ustaw `bucket_name`. Binding ma nazwę `MEDIA`.
+3. W Pages ustaw katalog publikacji `deploy`.
+4. Ustaw sekrety `GALLERY_PASSWORD`, `GALLERY_ADMIN_TOKEN`, `GALLERY_SESSION_SECRET` (co najmniej 32 losowe znaki).
+5. Skopiuj strukturę spod `media/` do bucketa, poczynając od `events/index.json`. Prefiks `media/` nie jest częścią klucza.
+6. Opublikuj kod i zweryfikuj logowanie, pobieranie oraz przesłanie zdjęcia na docelowej domenie. Dopiero sprawdzony adres wpisz do README.
 
-```powershell
-Move-Item -LiteralPath "D:\galeria-spotkanie-sp24" -Destination "C:\galeria-spotkanie-sp24"
-```
+Sam push do GitHub nie przesyła mediów. Bucket potrzebuje fotografii, filmów i manifestów.
 
-Po przeniesieniu:
+## Dostęp
 
-```powershell
-cd C:\galeria-spotkanie-sp24
-git add .
-git commit -m "Dodaj galerię spotkania SP24"
-```
+Sesja HMAC trwa 12 godzin. Cookie ma HttpOnly/SameSite=Strict oraz Secure w produkcji HTTPS. Rola organizatora jest częścią podpisanej sesji. Hasła nie trafiają do localStorage ani kodu klienta.
 
-## Darmowa publikacja przez Cloudflare Pages
+Media i katalogi albumów wymagają zalogowania. Zapis wymaga roli organizatora i zgodnego Origin. Walidowane są rozmiar oraz sygnatura formatu zdjęcia. Dane albumów są wstawiane jako tekst; odpowiedzi mają CSP, nosniff i zakaz cache prywatnych mediów.
 
-Plan Cloudflare Pages Free nie wymaga podania karty płatniczej. Dla tej galerii jest odpowiedni: projekt ma około 66 MB i 110 plików, a limit Free to 20 000 plików oraz 25 MiB na pojedynczy plik.
+Warunkowe zapisy manifestów z ETag zapobiegają zgubieniu równoległych zmian. [API R2](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/).
 
-1. Załóż konto na [Cloudflare](https://dash.cloudflare.com/sign-up) przez e-mail.
-2. Potwierdź adres e-mail.
-3. Przejdź do `Workers & Pages` i wybierz `Create application`.
-4. Wybierz `Pages`, a następnie `Import an existing Git repository`.
-5. Połącz konto GitHub i wskaż repozytorium galerii.
-6. Ustawienia kompilacji zostaw puste, ponieważ to prosta strona HTML, CSS i JavaScript.
-7. Kliknij `Save and Deploy`.
+Limit błędnych logowań w pamięci chroni pojedynczą instancję, nie całą rozproszoną usługę. Przed publicznym udostępnieniem dodaj w hostingu ograniczenie prób na `/api/login` i `/api/admin/login`. Handler obsługuje opcjonalny binding `AUTH_LIMITER`.
 
-Po chwili strona otrzyma darmowy adres w rodzaju:
+Wspólne hasło daje wspólny dostęp. Nie ma osobistych kont ani ulubionych. Uprawniony widz może dalej udostępnić pobrany plik. Wylogowanie usuwa cookie w jego przeglądarce; awaryjne unieważnienie wszystkich sesji wymaga zmiany `GALLERY_SESSION_SECRET`.
 
-```text
-https://galeria-sp24-rybnik.pages.dev
-```
+## Repozytorium
 
-Każdy kolejny push do gałęzi `main` automatycznie odświeży opublikowaną stronę.
+`deploy/assets/archive-mark.svg` to własny znak projektu oraz favicona. Tło korzysta z `archive-desktop.webp` i `archive-mobile.webp`; `<picture>` wybiera pionowy wariant do 650 px szerokości. Po zalogowaniu tło jest stonowane, a ograniczenie ruchu wyłącza przejście. Te zasoby są jawnie dopuszczone przed zalogowaniem; nie otwarto dostępu do całego katalogu zasobów ani prywatnych mediów. Plik `archive-pattern.svg` pozostał jako poprzedni wzór, ale nie jest już używany przez interfejs.
 
-## Prywatność zdjęć
+Tła są ilustracjami wygenerowanymi na potrzeby projektu, nie fotografiami szkoły. [Pochodzenie grafik i briefy](docs/ASSETS.md). Publiczny podgląd `docs/images/archive-preview.webp` pokazuje wyłącznie niezalogowany ekran z pustym polem hasła. Pozostałe zrzuty w `.artifacts/` mogą zawierać prywatne media i nie powinny trafiać na GitHub.
 
-Hasło zapisane w `app.js` jest ochroną tylko na poziomie interfejsu. Osoba techniczna, która ma bezpośredni link do pliku JPG, może go otworzyć bez podawania hasła.
+`media/`, `videos/`, `deploy/photos/`, `.artifacts/`, `node_modules/` i sekrety są ignorowane. Nie dołączaj do README zrzutów z prywatnymi fotografiami. Sam `.gitignore` nie usuwa plików z wcześniejszej historii.
 
-Jeżeli zdjęcia mają być dostępne tylko dla konkretnej listy osób, zastosuj zamiast tego Cloudflare Access z logowaniem e-mailem albo prywatny folder udostępniony wybranym osobom. Do wygodnej galerii dla absolwentów, dostępnej pod niepublicznym linkiem i z hasłem, obecna wersja jest wystarczająca.
+~~~sh
+git status
+git ls-files
+npm test
+~~~
 
-### Prawdziwe logowanie przez Cloudflare Access
-
-Nie musisz włączać go teraz. Najpierw opublikuj stronę w Cloudflare Pages. Następnie w panelu Cloudflare możesz utworzyć aplikację Access dla adresu galerii i wybrać logowanie kodem wysłanym na e-mail. Do zasad dostępu dodasz konkretne adresy osób, które mogą oglądać zdjęcia.
-
-Cloudflare Access działa przed otwarciem strony, więc nie wymaga zmiany kodu galerii. Gdy Access będzie gotowy, można usunąć hasło z `app.js`, ponieważ dostęp będzie kontrolowany przez Cloudflare.
-
-## Pobieranie zdjęć
-
-Każde zdjęcie ma ikonę pobierania w prawym górnym rogu. Kliknięcie jej natychmiast pobiera pełny oryginalny plik JPG na komputer. Ten sam przycisk znajduje się też w pełnoekranowym podglądzie.
-
-## Ulubione zdjęcia
-
-Kliknięcie serca na zdjęciu zapisuje je jako ulubione w tej przeglądarce. Przycisk `Ulubione` pokazuje później tylko oznaczone fotografie.
-
-## Filmy z płyty
-
-Nagrania są w formacie DVD `.VOB`, a więc nie działają wygodnie w nowoczesnej przeglądarce. Do dodania ich do galerii trzeba najpierw przekonwertować główne pliki `VTS_01_1.VOB` oraz `VTS_01_2.VOB` do MP4 (H.264). Po konwersji można dodać osobną sekcję filmów.
+Projekt nie wykonuje automatycznych commitów, pushy ani wdrożeń.

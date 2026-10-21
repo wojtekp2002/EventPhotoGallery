@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="description" content="Archiwum spotkań rocznika 1964 SP24 w Rybniku. Fotografie i nagrania z naszych spotkań.">
+  <title>Archiwum spotkań rocznika 1964 · SP24</title>
+  <link rel="icon" href="/assets/archive-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=10">
+  <script src="/vendor/lucide.min.js" defer></script>
+  <script src="/app.js?v=9" type="module"></script>
+</head>
+<body>
+  <picture class="archive-backdrop" aria-hidden="true">
+    <source media="(max-width: 650px)" srcset="/assets/archive-mobile.webp">
+    <img src="/assets/archive-desktop.webp" width="1536" height="1024" alt="" fetchpriority="high" decoding="async">
+  </picture>
+  <a class="skip-link" href="#gallery-content">Przejdź do zdjęć</a>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Archiwum spotkań rocznika 1964 SP24">
+      <img class="school-mark" src="/assets/archive-mark.svg" width="44" height="44" alt="">
+      <span><strong>Archiwum spotkań</strong><small>Rocznik 1964 · SP24 Rybnik</small></span>
+    </a>
+    <div class="header-actions" id="header-actions" hidden>
+      <button class="button primary" id="add-photos" type="button"><i data-lucide="image-plus"></i><span>Dodaj zdjęcia</span></button>
+      <button class="icon-button" id="logout" type="button" title="Wyloguj" aria-label="Wyloguj"><i data-lucide="log-out"></i></button>
+    </div>
+    <span class="private-label" id="private-label"><i data-lucide="lock-keyhole"></i> Prywatne archiwum</span>
+  </header>
+
+  <main id="access-screen" class="access-screen">
+    <section class="access-content" aria-labelledby="access-title">
+      <img class="access-symbol" src="/assets/archive-mark.svg" width="56" height="56" alt="">
+      <p class="eyebrow">Nasze wspólne wspomnienia</p>
+      <h1 id="access-title">Archiwum spotkań<br>rocznika 1964 <span>SP24</span></h1>
+      <p class="access-description">Miło znów się spotkać.</p>
+      <form id="access-form" class="stack">
+        <label for="access-password">Hasło do archiwum</label>
+        <div class="password-field"><input id="access-password" type="password" autocomplete="current-password" required maxlength="256"><button class="icon-button" id="password-toggle" type="button" aria-label="Pokaż hasło" title="Pokaż hasło"><i data-lucide="eye"></i></button></div>
+        <p id="access-error" class="error" role="alert" hidden></p>
+        <button class="button primary" id="access-submit" type="submit">Otwórz archiwum<i data-lucide="arrow-right"></i></button>
+      </form>
+    </section>
+  </main>
+
+  <main id="gallery-app" class="page" hidden>
+    <section class="page-heading">
+      <div><p class="eyebrow">Rocznik 1964 · SP24</p><h1>Nasze spotkania</h1><p class="muted" id="archive-summary"></p></div>
+      <span class="archive-seal"><i data-lucide="gallery-vertical-end"></i><span>Wspólne<br>wspomnienia</span></span>
+    </section>
+    <nav class="albums" id="albums" aria-label="Albumy ze spotkań"></nav>
+    <section id="gallery-content" class="collection" tabindex="-1" aria-labelledby="collection-title">
+      <div class="collection-heading">
+        <div><h2 id="collection-title">Wszystkie spotkania</h2><p class="muted" id="collection-date"></p></div>
+        <button class="button secondary" id="browse" type="button"><i data-lucide="eye"></i>Przeglądaj</button>
+      </div>
+      <div class="toolbar">
+        <div class="segmented" role="group" aria-label="Rodzaj materiałów">
+          <button type="button" id="photos-tab" aria-pressed="true"><i data-lucide="images"></i>Zdjęcia<span class="count" id="photos-count">0</span></button>
+          <button type="button" id="videos-tab" aria-pressed="false"><i data-lucide="film"></i>Filmy<span class="count" id="videos-count">0</span></button>
+        </div>
+        <label class="search"><i data-lucide="search"></i><span class="sr-only">Szukaj zdjęcia lub spotkania</span><input id="search" type="search" placeholder="Szukaj w archiwum" maxlength="100"></label>
+      </div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <p class="error" id="gallery-error" role="alert" hidden></p>
+      <button id="retry-gallery" class="button secondary" type="button" hidden>Spróbuj ponownie</button>
+      <div id="photo-grid" class="photo-grid"></div>
+      <div id="video-grid" class="video-grid" hidden></div>
+      <div class="empty-state" id="empty-state" hidden><i data-lucide="images"></i><h3 id="empty-title">Jeszcze nie ma zdjęć</h3><button class="button secondary" id="empty-add" type="button">Dodaj pierwsze zdjęcia</button></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>Archiwum spotkań rocznika 1964 · SP24</span><span>Rybnik</span></footer>
+
+  <dialog id="lightbox" class="lightbox" aria-label="Podgląd zdjęcia">
+    <div class="lightbox-bar"><div class="lightbox-caption"><strong id="lightbox-label"></strong><span id="lightbox-counter"></span></div><div class="lightbox-actions">
+      <button id="slideshow" class="icon-button" type="button" title="Pokaz slajdów" aria-label="Rozpocznij pokaz slajdów" aria-pressed="false"><i data-lucide="play"></i></button>
+      <button id="share" class="icon-button" type="button" title="Kopiuj link do zdjęcia" aria-label="Kopiuj link do zdjęcia"><i data-lucide="link"></i></button>
+      <a id="lightbox-download" class="button primary" download><i data-lucide="download"></i><span>Pobierz</span></a>
+      <button id="lightbox-close" class="icon-button" type="button" aria-label="Zamknij podgląd" title="Zamknij podgląd"><i data-lucide="x"></i></button>
+    </div></div>
+    <div class="lightbox-stage"><button id="previous" class="icon-button lightbox-nav previous" type="button" aria-label="Poprzednie zdjęcie"><i data-lucide="chevron-left"></i></button><img id="lightbox-image" alt=""><button id="next" class="icon-button lightbox-nav next" type="button" aria-label="Następne zdjęcie"><i data-lucide="chevron-right"></i></button></div>
+    <p id="lightbox-status" class="lightbox-status" role="status"></p>
+  </dialog>
+
+  <dialog id="upload-dialog" class="upload-dialog" aria-labelledby="upload-title">
+    <div class="dialog-heading"><div><p class="eyebrow">Wspólne archiwum</p><h2 id="upload-title">Dodaj zdjęcia</h2></div><button id="upload-close" class="icon-button" type="button" aria-label="Zamknij dodawanie" title="Zamknij"><i data-lucide="x"></i></button></div>
+    <form id="organizer-form" class="stack">
+      <label for="organizer-password">Hasło organizatora</label>
+      <input id="organizer-password" type="password" autocomplete="current-password" required maxlength="256">
+      <p id="organizer-error" class="error" role="alert" hidden></p>
+      <button class="button primary" type="submit">Dalej<i data-lucide="arrow-right"></i></button>
+    </form>
+    <form id="upload-form" class="stack" hidden>
+      <label for="upload-album">Do którego spotkania?</label>
+      <select id="upload-album" required></select>
+      <div id="new-album-fields" class="form-columns" hidden>
+        <label>Nazwa spotkania<input id="album-title" type="text" placeholder="Spotkanie 2026" maxlength="100"></label>
+        <label><span>Data <span class="optional">(opcjonalnie)</span></span><input id="album-date" type="date"></label>
+      </div>
+      <label class="dropzone" id="dropzone" for="file-input"><i data-lucide="image-plus"></i><strong>Wybierz zdjęcia</strong><span>JPG, PNG lub WebP · do 20 MB na zdjęcie</span><input class="sr-only" id="file-input" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>
+      <ul id="file-list" class="file-list" aria-label="Wybrane zdjęcia"></ul>
+      <p id="file-summary" class="muted"></p>
+      <progress id="upload-progress" max="100" value="0" hidden aria-label="Postęp dodawania zdjęć"></progress>
+      <p id="upload-status" role="status" aria-live="polite"></p>
+      <p id="upload-error" class="error" role="alert" hidden></p>
+      <div class="dialog-footer"><button id="upload-cancel" class="button secondary" type="button">Anuluj</button><button id="upload-submit" class="button primary" type="submit"><i data-lucide="upload"></i>Dodaj zdjęcia</button></div>
+    </form>
+  </dialog>
+  <p id="toast" class="toast" role="status" hidden></p>
+</body>
+</html>

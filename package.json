@@ -1,0 +1,16 @@
+{
+  "name": "sp24-archive",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Archiwum spotkań rocznika 1964 SP24. Prywatne albumy, zdjęcia i nagrania.",
+  "scripts": {
+    "dev": "node local-server.js",
+    "test": "node --test tests/api.test.mjs",
+    "event:create": "node scripts/create-event.mjs",
+    "media:scan": "node scripts/scan-media.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
