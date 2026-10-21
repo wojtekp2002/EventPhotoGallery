@@ -44,7 +44,7 @@ Otwórz adres podany w terminalu. Domyślnie to `http://127.0.0.1:8000`; zajęty
 
 Masz już projekt na dysku? Uruchom tylko `npm run dev` w jego folderze. Na Windows można również użyć `start-galeria.bat`.
 
-| Lokalny dostęp | Hasło |
+| Lokalny podgląd | Hasło (nie do produkcji) |
 | --- | --- |
 | Archiwum | `SP24-2007` |
 | Dodawanie zdjęć | `organizator-lokalnie` |
